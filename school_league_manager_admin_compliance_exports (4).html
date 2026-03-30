@@ -1,0 +1,1588 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>School League Manager Pro</title>
+<style>
+:root{
+  --bg:#050505;
+  --bg-2:#0d0d0d;
+  --panel:#111111;
+  --panel-2:#161616;
+  --panel-3:#1c1c1c;
+  --line:rgba(255,255,255,0.08);
+  --line-strong:rgba(255,70,70,0.24);
+  --text:#f5f5f5;
+  --muted:#b7b7b7;
+  --red:#ff2f43;
+  --red-2:#d7001f;
+  --red-3:#ff6b7a;
+  --green:#1fd17c;
+  --amber:#ffb347;
+  --blue:#3ba7ff;
+  --shadow:0 18px 50px rgba(0,0,0,0.45);
+  --radius-xl:28px;
+  --radius-lg:22px;
+  --radius-md:16px;
+}
+*{box-sizing:border-box}
+html,body{margin:0;min-height:100%;font-family:Inter,Segoe UI,Roboto,Arial,sans-serif;color:var(--text);scroll-behavior:smooth}
+body{
+  background:
+    radial-gradient(circle at 15% 10%, rgba(255,47,67,0.15), transparent 18%),
+    radial-gradient(circle at 85% 8%, rgba(255,47,67,0.12), transparent 16%),
+    radial-gradient(circle at 50% 100%, rgba(255,47,67,0.06), transparent 28%),
+    linear-gradient(180deg, #020202 0%, #060606 45%, #0d0d0d 100%);
+  overflow-x:hidden;
+}
+body::before{
+  content:'';
+  position:fixed;
+  inset:0;
+  pointer-events:none;
+  background:
+    linear-gradient(90deg, rgba(255,255,255,0.02) 1px, transparent 1px),
+    linear-gradient(rgba(255,255,255,0.02) 1px, transparent 1px);
+  background-size:34px 34px;
+  mask-image:linear-gradient(to bottom, rgba(255,255,255,0.4), transparent 85%);
+}
+@keyframes pulseGlow{
+  0%{box-shadow:0 0 0 rgba(255,47,67,0), 0 0 0 rgba(255,47,67,0)}
+  50%{box-shadow:0 0 24px rgba(255,47,67,0.18), 0 0 60px rgba(255,47,67,0.08)}
+  100%{box-shadow:0 0 0 rgba(255,47,67,0), 0 0 0 rgba(255,47,67,0)}
+}
+@keyframes liveSweep{
+  0%{transform:translateX(-120%)}
+  100%{transform:translateX(120%)}
+}
+@keyframes fadeUp{
+  from{opacity:0;transform:translateY(12px)}
+  to{opacity:1;transform:translateY(0)}
+}
+.app{max-width:1600px;margin:0 auto;padding:24px;animation:fadeUp 0.45s ease}
+.hero{
+  position:relative;
+  overflow:hidden;
+  border:1px solid rgba(255,47,67,0.30);
+  border-radius:36px;
+  padding:28px;
+  background:
+    radial-gradient(circle at 12% 18%, rgba(255,47,67,0.28), transparent 18%),
+    radial-gradient(circle at 88% 12%, rgba(255,47,67,0.18), transparent 16%),
+    linear-gradient(135deg, rgba(12,12,12,0.98), rgba(20,20,20,0.96));
+  box-shadow:var(--shadow), inset 0 0 80px rgba(255,47,67,0.05);
+  margin-bottom:20px;
+}
+.hero::before{content:'';position:absolute;inset:auto 0 0 0;height:3px;background:linear-gradient(90deg, transparent, var(--red), transparent)}
+.hero::after{content:'';position:absolute;top:0;left:-30%;width:22%;height:100%;background:linear-gradient(90deg, transparent, rgba(255,255,255,0.07), transparent);animation:liveSweep 5.5s linear infinite}
+.hero-top{display:flex;justify-content:space-between;align-items:flex-start;gap:16px;flex-wrap:wrap}
+.brand{display:flex;gap:18px;align-items:center}
+.badge-ball{
+  width:76px;height:76px;border-radius:50%;position:relative;
+  background:
+    radial-gradient(circle at 30% 30%, rgba(255,255,255,0.92), rgba(255,255,255,0.12) 15%, transparent 18%),
+    radial-gradient(circle at center, rgba(255,47,67,0.40), rgba(255,47,67,0.06) 60%, transparent 70%),
+    linear-gradient(145deg, #090909, #1a1a1a);
+  border:1px solid rgba(255,47,67,0.35);
+  animation:pulseGlow 2.8s ease infinite;
+}
+.badge-ball::before,.badge-ball::after{content:'';position:absolute;inset:10px;border-radius:50%;border:1px solid rgba(255,255,255,0.10)}
+.badge-ball::after{inset:20px}
+.hero h1{margin:0;font-size:34px;letter-spacing:0.3px}
+.hero p{margin:8px 0 0 0;color:var(--muted);font-size:14px;line-height:1.6;max-width:900px}
+.hero-actions{display:flex;gap:10px;flex-wrap:wrap}
+.button{border:none;border-radius:999px;padding:12px 18px;font-weight:800;cursor:pointer;transition:transform 0.2s ease, filter 0.2s ease, box-shadow 0.2s ease, background 0.2s ease;color:white}
+.button:hover{transform:translateY(-2px);filter:brightness(1.06)}
+.button:active{transform:translateY(0)}
+.button.primary{background:linear-gradient(135deg, var(--red-2), var(--red));box-shadow:0 10px 28px rgba(255,47,67,0.22)}
+.button.secondary{background:linear-gradient(135deg, #2b2b2b, #151515);border:1px solid var(--line-strong)}
+.button.ghost{background:rgba(255,255,255,0.04);border:1px solid var(--line)}
+.button.danger{background:linear-gradient(135deg, #8f0015, var(--red-2))}
+.button.ok{background:linear-gradient(135deg, #0a7b4b, var(--green))}
+.button.warn{background:linear-gradient(135deg, #a36b10, var(--amber));color:#130d00}
+.button.small{padding:10px 12px;font-size:12px}
+.button.info{background:linear-gradient(135deg, #166ab9, var(--blue))}
+.live-dot{display:inline-block;width:9px;height:9px;border-radius:50%;background:var(--red);margin-right:8px;animation:pulseGlow 2s ease infinite}
+.mode-banner{display:flex;align-items:center;gap:10px;padding:10px 14px;border-radius:999px;background:rgba(255,47,67,0.10);border:1px solid rgba(255,47,67,0.22);font-size:12px;font-weight:800;text-transform:uppercase;letter-spacing:0.8px}
+.summary{display:grid;grid-template-columns:repeat(7,1fr);gap:14px;margin-top:20px}
+.stat{position:relative;border:1px solid var(--line);border-radius:22px;padding:18px;background:linear-gradient(180deg, rgba(255,255,255,0.04), rgba(255,255,255,0.02));overflow:hidden}
+.stat::before{content:'';position:absolute;inset:0 auto 0 0;width:4px;background:linear-gradient(180deg, var(--red), transparent)}
+.stat-label{font-size:12px;color:var(--muted);text-transform:uppercase;letter-spacing:1px}
+.stat-value{font-size:28px;font-weight:900;margin-top:6px}
+.layout{display:grid;grid-template-columns:1fr 1.1fr 1.5fr;gap:18px}
+.card{position:relative;background:linear-gradient(180deg, rgba(15,15,15,0.98), rgba(20,20,20,0.96));border:1px solid rgba(255,255,255,0.08);border-radius:var(--radius-xl);padding:20px;box-shadow:var(--shadow), inset 0 0 50px rgba(255,47,67,0.03);overflow:hidden}
+.card::before{content:'';position:absolute;top:0;left:0;right:0;height:2px;background:linear-gradient(90deg, transparent, rgba(255,47,67,0.85), transparent)}
+.card h2{margin:0 0 16px 0;font-size:18px;letter-spacing:0.3px}
+.stack{display:flex;flex-direction:column;gap:12px}
+.grid-2{display:grid;grid-template-columns:1fr 1fr;gap:12px}
+.grid-3{display:grid;grid-template-columns:1fr 1fr 1fr;gap:12px}
+.section-full{grid-column:span 3}
+label{display:block;margin-bottom:6px;font-size:12px;color:var(--muted);text-transform:uppercase;letter-spacing:0.9px}
+input,select,textarea{
+  width:100%;border:1px solid rgba(255,255,255,0.10);
+  background:linear-gradient(180deg, rgba(255,255,255,0.08), rgba(255,255,255,0.04));
+  color:var(--text);border-radius:16px;padding:13px 14px;outline:none;
+  transition:border-color 0.2s ease, box-shadow 0.2s ease, transform 0.2s ease, background 0.2s ease;
+  -webkit-appearance:none;appearance:none
+}
+select{color:var(--text);background:linear-gradient(180deg, rgba(255,255,255,0.08), rgba(255,255,255,0.04)), linear-gradient(135deg, rgba(255,47,67,0.08), rgba(255,47,67,0.02))}
+select option{color:#ffffff;background:#141414}
+input::placeholder, textarea::placeholder{color:#d0d0d0;opacity:0.72}
+input:focus,select:focus,textarea:focus{border-color:rgba(255,47,67,0.55);box-shadow:0 0 0 4px rgba(255,47,67,0.10), 0 0 26px rgba(255,47,67,0.08);transform:translateY(-1px)}
+textarea{resize:vertical;min-height:98px}
+.helper{font-size:12px;color:var(--muted)}
+.team-grid{display:grid;grid-template-columns:1fr 1fr;gap:16px}
+.team-card{position:relative;border:1px solid rgba(255,255,255,0.08);border-radius:24px;padding:16px;background:radial-gradient(circle at top right, rgba(255,47,67,0.18), transparent 24%),linear-gradient(180deg, rgba(255,255,255,0.05), rgba(255,255,255,0.02));transition:transform 0.2s ease, border-color 0.2s ease, box-shadow 0.2s ease}
+.team-card:hover{transform:translateY(-3px);border-color:var(--line-strong);box-shadow:0 12px 30px rgba(255,47,67,0.08)}
+.team-head{display:flex;justify-content:space-between;gap:12px;align-items:flex-start;flex-wrap:wrap;margin-bottom:14px}
+.team-name{font-size:18px;font-weight:900}
+.team-meta{font-size:12px;color:var(--muted);margin-top:4px}
+.team-actions{display:flex;gap:8px;flex-wrap:wrap;align-items:center}
+.team-actions input{min-width:220px}
+.player-list{display:flex;flex-direction:column;gap:10px}
+.player-row{display:grid;grid-template-columns:1.1fr 90px 190px 1fr;gap:10px;align-items:center;border:1px solid var(--line);border-radius:18px;padding:12px;background:rgba(255,255,255,0.03);transition:transform 0.18s ease, border-color 0.18s ease, background 0.18s ease}
+.player-row:hover{transform:translateY(-1px);border-color:var(--line-strong)}
+.player-row.forms-ok{background:linear-gradient(135deg, rgba(31,209,124,0.12), rgba(255,47,67,0.08));border-color:rgba(31,209,124,0.35)}
+.player-name{font-weight:800}
+.player-sub{font-size:12px;color:var(--muted);margin-top:3px}
+.pill{display:inline-flex;align-items:center;justify-content:center;min-height:38px;border-radius:999px;padding:0 12px;font-size:12px;font-weight:900;border:1px solid var(--line);background:rgba(255,255,255,0.05);text-transform:uppercase;letter-spacing:0.6px}
+.pill.ok{background:rgba(31,209,124,0.14);border-color:rgba(31,209,124,0.35);color:#d8ffee}
+.pill.pending{background:rgba(255,179,71,0.14);border-color:rgba(255,179,71,0.30);color:#ffe7c2}
+.controls{display:flex;gap:8px;flex-wrap:wrap}
+.empty{border:1px dashed var(--line);border-radius:18px;padding:16px;color:var(--muted);background:rgba(255,255,255,0.02)}
+.fixture-list{display:grid;grid-template-columns:1fr 1fr;gap:16px}
+.fixture-card{position:relative;border:1px solid rgba(255,255,255,0.08);border-radius:24px;padding:18px;overflow:hidden;background:radial-gradient(circle at top right, rgba(255,47,67,0.22), transparent 26%),linear-gradient(180deg, rgba(255,255,255,0.05), rgba(255,255,255,0.03));transition:transform 0.2s ease, border-color 0.2s ease, box-shadow 0.2s ease}
+.fixture-card:hover{transform:translateY(-3px);border-color:var(--line-strong);box-shadow:0 14px 30px rgba(255,47,67,0.10)}
+.fixture-card::after{content:'';position:absolute;top:0;left:0;right:0;height:3px;background:linear-gradient(90deg, transparent, var(--red), transparent)}
+.fixture-head{display:flex;justify-content:space-between;gap:12px;align-items:flex-start;flex-wrap:wrap;margin-bottom:10px}
+.fixture-title{font-size:18px;font-weight:900}
+.fixture-sub{font-size:12px;color:var(--muted);margin-top:3px}
+.fixture-date{font-size:13px;font-weight:800;color:#ffd3d8}
+.fixture-countdown{display:inline-flex;align-items:center;gap:8px;margin-top:10px;padding:10px 12px;border-radius:14px;border:1px solid rgba(59,167,255,0.22);background:rgba(59,167,255,0.07);font-size:13px;font-weight:700;color:#d7ecff}
+.fixture-meta{display:grid;grid-template-columns:1fr 1fr;gap:10px;margin:14px 0}
+.meta-box{border:1px solid var(--line);border-radius:16px;padding:12px;background:rgba(255,255,255,0.03)}
+.meta-label{font-size:11px;color:var(--muted);text-transform:uppercase;letter-spacing:0.8px;margin-bottom:5px}
+.meta-value{font-size:13px;font-weight:800;line-height:1.45}
+.notes{border:1px solid var(--line);border-radius:16px;padding:12px;background:rgba(255,255,255,0.03);color:#f0f0f0;white-space:pre-wrap;line-height:1.55;font-size:13px}
+.fixture-actions{display:flex;gap:8px;flex-wrap:wrap;margin-top:14px}
+.table-wrap{overflow:auto;border:1px solid var(--line);border-radius:20px}
+table{width:100%;border-collapse:collapse;min-width:760px}
+th,td{padding:12px 10px;border-bottom:1px solid var(--line);text-align:left;font-size:13px}
+th{background:rgba(255,47,67,0.08);color:#fff;text-transform:uppercase;letter-spacing:0.7px;font-size:11px}
+tr:hover td{background:rgba(255,255,255,0.03)}
+.check-grid{display:grid;grid-template-columns:repeat(4, 1fr);gap:8px}
+.check-item{display:flex;align-items:center;gap:8px;padding:8px 10px;border:1px solid var(--line);border-radius:14px;background:rgba(255,255,255,0.03);font-size:12px}
+.check-item input{width:auto;transform:scale(1.1)}
+.export-grid{display:grid;grid-template-columns:repeat(4,1fr);gap:12px}
+.footer-note{margin-top:18px;color:var(--muted);font-size:12px;text-align:right}
+.modal-overlay{position:fixed;inset:0;background:rgba(0,0,0,0.72);backdrop-filter:blur(6px);display:none;align-items:center;justify-content:center;padding:20px;z-index:999}
+.modal-overlay.show{display:flex;animation:fadeUp 0.2s ease}
+.modal{width:min(980px, 100%);max-height:92vh;overflow:auto;border:1px solid var(--line-strong);border-radius:28px;background:linear-gradient(180deg, rgba(10,10,10,0.98), rgba(18,18,18,0.98));box-shadow:0 30px 90px rgba(0,0,0,0.55);padding:22px}
+.modal-head{display:flex;justify-content:space-between;align-items:center;gap:12px;margin-bottom:14px}
+.modal-title{font-size:22px;font-weight:900}
+.modal-sub{font-size:12px;color:var(--muted)}
+.toast{position:fixed;right:20px;bottom:20px;z-index:1200;display:flex;flex-direction:column;gap:10px}
+.toast-item{min-width:260px;max-width:420px;padding:14px 16px;border-radius:16px;border:1px solid var(--line);background:linear-gradient(180deg, rgba(18,18,18,0.96), rgba(28,28,28,0.98));box-shadow:var(--shadow);font-size:13px;font-weight:700;animation:fadeUp 0.25s ease}
+.toast-item.success{border-color:rgba(31,209,124,0.35)}
+.toast-item.error{border-color:rgba(255,47,67,0.35)}
+@media (max-width:1400px){.summary{grid-template-columns:repeat(4,1fr)}}
+@media (max-width:1280px){.layout{grid-template-columns:1fr 1fr}.section-full{grid-column:span 2}}
+@media (max-width:980px){.summary,.team-grid,.fixture-list,.grid-2,.grid-3,.check-grid,.export-grid{grid-template-columns:1fr}.layout{grid-template-columns:1fr}.section-full{grid-column:span 1}.player-row{grid-template-columns:1fr}}
+@media (max-width:640px){.app{padding:16px}.hero{padding:20px}.hero h1{font-size:26px}.badge-ball{width:60px;height:60px}}
+</style>
+</head>
+<body>
+<div class="app">
+  <section class="hero">
+    <div class="hero-top">
+      <div class="brand">
+        <div class="badge-ball"></div>
+        <div>
+          <h1>School League Manager</h1>
+          <p>Deploy-ready single file football admin system with squads, fixtures, countdowns, editable compliance tracking, standings, bulk actions, and export tools.</p>
+        </div>
+      </div>
+      <div class="hero-actions">
+        <div class="mode-banner"><span class="live-dot"></span>Admin Control Centre</div>
+        <button class="button primary" type="button" id="openFixtureCreatorBtn">New Fixture</button>
+        <button class="button secondary" type="button" id="scrollTeamsBtn">Teams</button>
+        <button class="button secondary" type="button" id="scrollComplianceBtn">Compliance</button>
+        <button class="button ghost" type="button" id="saveStatus">Saved locally</button>
+      </div>
+    </div>
+    <div class="summary">
+      <div class="stat"><div class="stat-label">Teams</div><div class="stat-value" id="summaryTeams">4</div></div>
+      <div class="stat"><div class="stat-label">Players</div><div class="stat-value" id="summaryPlayers">0</div></div>
+      <div class="stat"><div class="stat-label">Forms Submitted</div><div class="stat-value" id="summaryForms">0</div></div>
+      <div class="stat"><div class="stat-label">Compliance Complete</div><div class="stat-value" id="summaryComplianceComplete">0</div></div>
+      <div class="stat"><div class="stat-label">Fixtures</div><div class="stat-value" id="summaryFixtures">0</div></div>
+      <div class="stat"><div class="stat-label">Upcoming</div><div class="stat-value" id="summaryUpcomingFixtures">0</div></div>
+      <div class="stat"><div class="stat-label">Next Kick-off</div><div class="stat-value" id="summaryNextKickoff">--</div></div>
+    </div>
+  </section>
+
+  <section class="layout">
+    <div class="card">
+      <h2>Add Player</h2>
+      <div class="stack">
+        <div>
+          <label for="teamSelect">Team</label>
+          <select id="teamSelect"></select>
+        </div>
+        <div>
+          <label for="playerName">Player name</label>
+          <input id="playerName" placeholder="Example: Sipho Dlamini">
+        </div>
+        <div class="grid-2">
+          <div>
+            <label for="position">Position</label>
+            <select id="position">
+              <option>GK</option>
+              <option>RB</option>
+              <option>CB</option>
+              <option>LB</option>
+              <option>DM</option>
+              <option>CM</option>
+              <option>AM</option>
+              <option>RW</option>
+              <option>LW</option>
+              <option>ST</option>
+            </select>
+          </div>
+          <div>
+            <label for="playerNumber">Squad number</label>
+            <input id="playerNumber" type="number" min="1" max="99" placeholder="Optional">
+          </div>
+        </div>
+        <button class="button primary" type="button" id="addPlayerBtn">Add Player</button>
+        <div class="helper">Each player includes a full editable compliance record.</div>
+      </div>
+    </div>
+
+    <div class="card" id="fixtureCreatorSection">
+      <h2>Create Fixture</h2>
+      <div class="stack">
+        <div class="grid-2">
+          <div>
+            <label for="homeTeam">Home team</label>
+            <select id="homeTeam"></select>
+          </div>
+          <div>
+            <label for="awayTeam">Away age group</label>
+            <select id="awayTeam"></select>
+          </div>
+        </div>
+        <div class="grid-2">
+          <div>
+            <label for="fixtureDate">Date</label>
+            <input id="fixtureDate" type="date">
+          </div>
+          <div>
+            <label for="fixtureTime">Kick-off</label>
+            <input id="fixtureTime" type="time">
+          </div>
+        </div>
+        <div class="grid-2">
+          <div>
+            <label for="fixtureVenue">Venue</label>
+            <input id="fixtureVenue" placeholder="Example: BenHale Main Field">
+          </div>
+          <div>
+            <label for="fixtureCompetition">Away team name</label>
+            <input id="fixtureCompetition" placeholder="Example: Parklands U14">
+          </div>
+        </div>
+        <div class="grid-2">
+          <div>
+            <label for="fixtureReferee">Referee</label>
+            <input id="fixtureReferee" placeholder="Optional">
+          </div>
+          <div>
+            <label for="fixtureTransport">Transport / arrival</label>
+            <input id="fixtureTransport" placeholder="Example: Bus departs 13:30">
+          </div>
+        </div>
+        <div>
+          <label for="fixtureNotes">Notes</label>
+          <textarea id="fixtureNotes" placeholder="Add kit notes, admin reminders, tactical notes, or school logistics"></textarea>
+        </div>
+        <div class="grid-2">
+          <button class="button primary" type="button" id="createFixtureBtn">Create Fixture</button>
+          <button class="button ghost" type="button" id="clearFixtureFormBtn">Clear Form</button>
+        </div>
+        <div class="helper">Home and away age groups must match. The away team name always comes from the Away team name text field.</div>
+      </div>
+    </div>
+
+    <div class="card">
+      <h2>Export Tools</h2>
+      <div class="export-grid">
+        <button class="button primary" type="button" id="exportSquadsPdfBtn">Export Squads to PDF</button>
+        <button class="button secondary" type="button" id="exportFixturesPdfBtn">Export Fixtures to PDF</button>
+        <button class="button ok" type="button" id="exportStandingsCsvBtn">Export Standings to CSV</button>
+        <button class="button warn" type="button" id="exportCompliancePdfBtn">Export Compliance Report</button>
+      </div>
+      <div class="helper" style="margin-top:12px">PDF exports open a print-ready document. Save as PDF from your browser print dialog.</div>
+    </div>
+
+    <div class="card section-full" id="teamsSection">
+      <h2>Teams and Squads</h2>
+      <div id="teams" class="team-grid"></div>
+    </div>
+
+    <div class="card section-full">
+      <h2>Upcoming Fixtures</h2>
+      <div id="upcomingFixtures" class="fixture-list"></div>
+    </div>
+
+    <div class="card section-full">
+      <h2>Fixtures</h2>
+      <div id="fixtures" class="fixture-list"></div>
+    </div>
+
+    <div class="card section-full" id="standingsSection">
+      <h2>Standings</h2>
+      <div class="table-wrap">
+        <table>
+          <thead>
+            <tr>
+              <th>#</th>
+              <th>Team</th>
+              <th>P</th>
+              <th>W</th>
+              <th>D</th>
+              <th>L</th>
+              <th>GF</th>
+              <th>GA</th>
+              <th>GD</th>
+              <th>PTS</th>
+            </tr>
+          </thead>
+          <tbody id="standingsBody"></tbody>
+        </table>
+      </div>
+    </div>
+
+    <div class="card section-full" id="complianceSection">
+      <h2>Admin Compliance Tracker</h2>
+      <div class="stack" style="margin-bottom:14px;">
+        <div class="helper">Select multiple players, then apply one or more compliance checks in one action.</div>
+        <div class="grid-2">
+          <div class="check-grid" style="grid-template-columns:repeat(4,minmax(0,1fr));">
+            <label class="check-item"><input type="checkbox" id="bulkIndemnityForms">Indemnity forms</label>
+            <label class="check-item"><input type="checkbox" id="bulkBirthCertificate">Birth certificate</label>
+            <label class="check-item"><input type="checkbox" id="bulkIdPhoto">ID photo</label>
+            <label class="check-item"><input type="checkbox" id="bulkIndemnityForm">Indemnity form</label>
+            <label class="check-item"><input type="checkbox" id="bulkTransportPaid">Transport paid</label>
+            <label class="check-item"><input type="checkbox" id="bulkKitIssued">Kit issued</label>
+            <label class="check-item"><input type="checkbox" id="bulkKitReturned">Kit returned</label>
+            <label class="check-item"><input type="checkbox" id="bulkFormsSubmitted">Highlight all forms submitted</label>
+          </div>
+          <div class="stack">
+            <div>
+              <label for="bulkPaymentStatus">Bulk payment status</label>
+              <select id="bulkPaymentStatus">
+                <option value="">No change</option>
+                <option value="Pending">Pending</option>
+                <option value="Partially Paid">Partially Paid</option>
+                <option value="Paid">Paid</option>
+                <option value="Exempt">Exempt</option>
+              </select>
+            </div>
+            <div class="controls">
+              <button class="button primary" type="button" id="applyBulkComplianceBtn">Apply to Selected Players</button>
+              <button class="button ghost" type="button" id="selectAllPlayersBtn">Select All</button>
+              <button class="button ghost" type="button" id="clearSelectedPlayersBtn">Clear Selection</button>
+            </div>
+          </div>
+        </div>
+      </div>
+      <div class="table-wrap">
+        <table>
+          <thead>
+            <tr>
+              <th><input type="checkbox" id="selectAllComplianceRows"></th>
+              <th>Team</th>
+              <th>Player</th>
+              <th>Position</th>
+              <th>Indemnity Forms</th>
+              <th>Birth Certificate</th>
+              <th>ID Photo</th>
+              <th>Transport Paid</th>
+              <th>Payment Status</th>
+              <th>Kit Issued</th>
+              <th>Kit Returned</th>
+              <th>Overall</th>
+              <th>Action</th>
+            </tr>
+          </thead>
+          <tbody id="complianceBody"></tbody>
+        </table>
+      </div>
+    </div>
+  </section>
+
+  <div class="footer-note">Persistent memory uses localStorage in this browser.</div>
+</div>
+
+<div class="modal-overlay" id="fixtureModalOverlay">
+  <div class="modal">
+    <div class="modal-head">
+      <div>
+        <div class="modal-title">Edit Fixture</div>
+        <div class="modal-sub">Update any part of the selected fixture.</div>
+      </div>
+      <button class="button ghost" type="button" id="closeFixtureModalBtn">Close</button>
+    </div>
+    <div class="stack">
+      <input type="hidden" id="editFixtureId">
+      <div class="grid-2">
+        <div>
+          <label for="editHomeTeam">Home team</label>
+          <select id="editHomeTeam"></select>
+        </div>
+        <div>
+          <label for="editAwayTeam">Away team</label>
+          <select id="editAwayTeam"></select>
+        </div>
+      </div>
+      <div class="grid-2">
+        <div>
+          <label for="editFixtureDate">Date</label>
+          <input id="editFixtureDate" type="date">
+        </div>
+        <div>
+          <label for="editFixtureTime">Kick-off</label>
+          <input id="editFixtureTime" type="time">
+        </div>
+      </div>
+      <div class="grid-2">
+        <div>
+          <label for="editFixtureVenue">Venue</label>
+          <input id="editFixtureVenue">
+        </div>
+        <div>
+          <label for="editFixtureCompetition">Away team name</label>
+          <input id="editFixtureCompetition">
+        </div>
+      </div>
+      <div class="grid-2">
+        <div>
+          <label for="editFixtureReferee">Referee</label>
+          <input id="editFixtureReferee">
+        </div>
+        <div>
+          <label for="editFixtureTransport">Transport / arrival</label>
+          <input id="editFixtureTransport">
+        </div>
+      </div>
+      <div>
+        <label for="editFixtureNotes">Notes</label>
+        <textarea id="editFixtureNotes"></textarea>
+      </div>
+      <div class="grid-2">
+        <button class="button primary" type="button" id="saveFixtureEditBtn">Save Changes</button>
+        <button class="button danger" type="button" id="deleteFixtureFromModalBtn">Delete Fixture</button>
+      </div>
+    </div>
+  </div>
+</div>
+
+<div class="modal-overlay" id="complianceModalOverlay">
+  <div class="modal">
+    <div class="modal-head">
+      <div>
+        <div class="modal-title">Edit Player Compliance</div>
+        <div class="modal-sub">Update admin and compliance status for this player.</div>
+      </div>
+      <button class="button ghost" type="button" id="closeComplianceModalBtn">Close</button>
+    </div>
+    <div class="stack">
+      <input type="hidden" id="compliancePlayerId">
+      <input type="hidden" id="complianceTeamIndex">
+      <div class="grid-2">
+        <div>
+          <label>Player</label>
+          <input id="compliancePlayerName" disabled>
+        </div>
+        <div>
+          <label>Team</label>
+          <input id="complianceTeamName" disabled>
+        </div>
+      </div>
+      <div class="check-grid">
+        <label class="check-item"><input type="checkbox" id="cmpIndemnityForms">Indemnity forms submitted</label>
+        <label class="check-item"><input type="checkbox" id="cmpBirthCertificate">Certified Birth Certificate submitted</label>
+        <label class="check-item"><input type="checkbox" id="cmpIdPhoto">ID Photo submitted</label>
+        <label class="check-item"><input type="checkbox" id="cmpIndemnityForm">Indemnity form submitted</label>
+        <label class="check-item"><input type="checkbox" id="cmpTransportPaid">Transport paid</label>
+        <label class="check-item"><input type="checkbox" id="cmpKitIssued">Kit issued</label>
+        <label class="check-item"><input type="checkbox" id="cmpKitReturned">Kit returned</label>
+        <label class="check-item"><input type="checkbox" id="cmpFormsSubmitted">Highlight as all forms submitted</label>
+      </div>
+      <div>
+        <label for="cmpPaymentStatus">Payment status</label>
+        <select id="cmpPaymentStatus">
+          <option value="Pending">Pending</option>
+          <option value="Partially Paid">Partially Paid</option>
+          <option value="Paid">Paid</option>
+          <option value="Exempt">Exempt</option>
+        </select>
+      </div>
+      <div class="grid-2">
+        <button class="button primary" type="button" id="saveComplianceBtn">Save Compliance</button>
+        <button class="button ghost" type="button" id="markComplianceCompleteBtn">Mark All Complete</button>
+      </div>
+    </div>
+  </div>
+</div>
+
+<div class="toast" id="toastContainer"></div>
+
+<script>
+const STORAGE_KEY = 'schoolLeagueManagerV5';
+let countdownInterval = null;
+let selectedCompliancePlayers = new Set();
+
+function makeId(){
+  return 'id-' + Math.random().toString(36).slice(2,10) + Date.now().toString(36).slice(-4);
+}
+
+const defaultCompliance = () => ({
+  indemnityFormsSubmitted:false,
+  certifiedBirthCertificateSubmitted:false,
+  idPhotoSubmitted:false,
+  indemnityFormSubmitted:false,
+  transportPaid:false,
+  paymentStatus:'Pending',
+  kitIssued:false,
+  kitReturned:false
+});
+
+const defaultData = {
+  teams:[
+    {id:makeId(), name:'Team A', players:[]},
+    {id:makeId(), name:'Team B', players:[]},
+    {id:makeId(), name:'Team C', players:[]},
+    {id:makeId(), name:'Team D', players:[]}
+  ],
+  fixtures:[]
+};
+
+let data = loadData();
+
+function copy(obj){
+  return JSON.parse(JSON.stringify(obj));
+}
+
+function showToast(message, type='success'){
+  const container = document.getElementById('toastContainer');
+  const item = document.createElement('div');
+  item.className = 'toast-item ' + type;
+  item.textContent = message;
+  container.appendChild(item);
+  setTimeout(() => {
+    item.remove();
+  }, 3000);
+}
+
+function loadData(){
+  try{
+    const raw = localStorage.getItem(STORAGE_KEY) || localStorage.getItem('schoolLeagueManagerV4') || localStorage.getItem('schoolLeagueManagerV3') || localStorage.getItem('schoolLeagueManagerV2') || localStorage.getItem('leagueData');
+    if(!raw) return copy(defaultData);
+    const parsed = JSON.parse(raw);
+    normalizeData(parsed);
+    return parsed;
+  }catch(error){
+    return copy(defaultData);
+  }
+}
+
+function normalizeData(target){
+  if(!target.teams || !Array.isArray(target.teams)) target.teams = copy(defaultData.teams);
+  if(!target.fixtures || !Array.isArray(target.fixtures)) target.fixtures = [];
+
+  target.teams.forEach(team => {
+    if(!team.id) team.id = makeId();
+    if(!team.name) team.name = 'Unnamed Team';
+    if(!Array.isArray(team.players)) team.players = [];
+    team.players.forEach(player => {
+      if(!player.id) player.id = makeId();
+      if(!player.name) player.name = 'Unnamed Player';
+      if(!player.pos) player.pos = 'CM';
+      if(typeof player.number === 'undefined' || player.number === null) player.number = '';
+      if(typeof player.formsSubmitted !== 'boolean') player.formsSubmitted = false;
+      if(!player.compliance || typeof player.compliance !== 'object') player.compliance = defaultCompliance();
+      player.compliance = {...defaultCompliance(), ...player.compliance};
+      if(!player.compliance.paymentStatus) player.compliance.paymentStatus = 'Pending';
+    });
+  });
+
+  target.fixtures.forEach(fixture => {
+    if(!fixture.id) fixture.id = makeId();
+    if(typeof fixture.homeIndex !== 'number' && typeof fixture.home === 'number') fixture.homeIndex = fixture.home;
+    if(typeof fixture.awayIndex !== 'number' && typeof fixture.away === 'number') fixture.awayIndex = fixture.away;
+    fixture.homeIndex = Number.isInteger(fixture.homeIndex) ? fixture.homeIndex : 0;
+    fixture.awayIndex = Number.isInteger(fixture.awayIndex) ? fixture.awayIndex : 1;
+    if(!fixture.date) fixture.date = '';
+    if(!fixture.time) fixture.time = '';
+    if(!fixture.venue) fixture.venue = '';
+    if(!fixture.competition) fixture.competition = '';
+    if(!fixture.referee) fixture.referee = '';
+    if(!fixture.transport) fixture.transport = '';
+    if(!fixture.notes) fixture.notes = '';
+    if(typeof fixture.homeScore !== 'number') fixture.homeScore = 0;
+    if(typeof fixture.awayScore !== 'number') fixture.awayScore = 0;
+    if(!fixture.status) fixture.status = 'Scheduled';
+  });
+}
+
+function save(){
+  localStorage.setItem(STORAGE_KEY, JSON.stringify(data));
+  setSaveStatus('Saved locally');
+  renderSummary();
+}
+
+function setSaveStatus(text){
+  document.getElementById('saveStatus').textContent = text;
+}
+
+function fixtureToDate(fixture){
+  if(!fixture || !fixture.date) return null;
+  const dt = new Date(`${fixture.date}T${fixture.time || '00:00'}`);
+  return Number.isNaN(dt.getTime()) ? null : dt;
+}
+
+function sortFixtures(){
+  data.fixtures.sort((a,b) => {
+    const aa = fixtureToDate(a);
+    const bb = fixtureToDate(b);
+    if(!aa && !bb) return 0;
+    if(!aa) return 1;
+    if(!bb) return -1;
+    return aa.getTime() - bb.getTime();
+  });
+}
+
+function fillTeamOptions(selectId, selectedValue){
+  const select = document.getElementById(selectId);
+  if(!select) return;
+  select.innerHTML = '';
+  data.teams.forEach((team,index) => {
+    const option = document.createElement('option');
+    option.value = index;
+    option.textContent = team.name;
+    select.appendChild(option);
+  });
+  if(select.options.length){
+    const values = [...select.options].map(opt => opt.value);
+    const targetValue = String(selectedValue ?? select.options[0].value);
+    select.value = values.includes(targetValue) ? targetValue : select.options[0].value;
+  }
+}
+
+function populateTeamSelects(){
+  const ids = ['teamSelect','homeTeam','awayTeam','editHomeTeam','editAwayTeam'];
+  ids.forEach(id => fillTeamOptions(id, document.getElementById(id)?.value));
+}
+
+function isComplianceComplete(player){
+  const c = player.compliance || defaultCompliance();
+  return c.indemnityFormsSubmitted && c.certifiedBirthCertificateSubmitted && c.idPhotoSubmitted && c.indemnityFormSubmitted && c.transportPaid && (c.paymentStatus === 'Paid' || c.paymentStatus === 'Exempt') && c.kitIssued;
+}
+
+function formatCountdown(targetDate){
+  if(!targetDate) return '--';
+  const diff = targetDate.getTime() - Date.now();
+  if(diff <= 0) return 'LIVE';
+  const minutes = Math.floor(diff / 60000);
+  const days = Math.floor(minutes / 1440);
+  const hours = Math.floor((minutes % 1440) / 60);
+  const mins = minutes % 60;
+  if(days > 0) return `${days}d ${hours}h ${mins}m`;
+  if(hours > 0) return `${hours}h ${mins}m`;
+  return `${mins}m`;
+}
+
+function getUpcomingFixtures(){
+  const now = Date.now();
+  return data.fixtures.filter(fixture => {
+    const dt = fixtureToDate(fixture);
+    const status = String(fixture.status || 'Scheduled').toLowerCase();
+    return dt && dt.getTime() >= now && status !== 'cancelled' && status !== 'full time';
+  });
+}
+
+function renderSummary(){
+  const players = data.teams.reduce((t,team) => t + team.players.length, 0);
+  const forms = data.teams.reduce((t,team) => t + team.players.filter(p => p.formsSubmitted).length, 0);
+  const complianceComplete = data.teams.reduce((t,team) => t + team.players.filter(p => isComplianceComplete(p)).length, 0);
+  const upcoming = getUpcomingFixtures();
+  const nextKickoff = upcoming.length ? fixtureToDate(upcoming[0]) : null;
+  document.getElementById('summaryTeams').textContent = data.teams.length;
+  document.getElementById('summaryPlayers').textContent = players;
+  document.getElementById('summaryForms').textContent = forms;
+  document.getElementById('summaryComplianceComplete').textContent = complianceComplete;
+  document.getElementById('summaryFixtures').textContent = data.fixtures.length;
+  document.getElementById('summaryUpcomingFixtures').textContent = upcoming.length;
+  document.getElementById('summaryNextKickoff').textContent = nextKickoff ? formatCountdown(nextKickoff) : '--';
+}
+
+function validatePlayer(teamIndex, name){
+  if(Number.isNaN(teamIndex) || !data.teams[teamIndex]){
+    showToast('Select a valid team.', 'error');
+    return false;
+  }
+  if(name === ''){
+    showToast('Enter a player name.', 'error');
+    return false;
+  }
+  return true;
+}
+
+function addPlayer(){
+  const teamIndex = parseInt(document.getElementById('teamSelect').value, 10);
+  const name = document.getElementById('playerName').value.trim();
+  const pos = document.getElementById('position').value;
+  const number = document.getElementById('playerNumber').value.trim();
+  if(!validatePlayer(teamIndex, name)) return;
+  data.teams[teamIndex].players.push({id:makeId(), name, pos, number, formsSubmitted:false, compliance:defaultCompliance()});
+  document.getElementById('playerName').value = '';
+  document.getElementById('playerNumber').value = '';
+  save();
+  renderTeams();
+  renderComplianceTable();
+  showToast('Player added successfully.');
+}
+
+function renameTeam(index){
+  const input = document.getElementById('teamName' + index);
+  if(!input) return;
+  const value = input.value.trim();
+  if(value === ''){
+    showToast('Team name cannot be empty.', 'error');
+    return;
+  }
+  data.teams[index].name = value;
+  save();
+  populateTeamSelects();
+  renderTeams();
+  renderUpcomingFixtures();
+  renderFixtures();
+  renderStandings();
+  renderComplianceTable();
+  showToast('Team renamed.');
+}
+
+function toggleFormsSubmitted(teamIndex, playerId){
+  const team = data.teams[teamIndex];
+  if(!team) return;
+  const player = team.players.find(p => p.id === playerId);
+  if(!player) return;
+  player.formsSubmitted = !player.formsSubmitted;
+  save();
+  renderTeams();
+  renderComplianceTable();
+}
+
+function deletePlayer(teamIndex, playerId){
+  const team = data.teams[teamIndex];
+  if(!team) return;
+  team.players = team.players.filter(p => p.id !== playerId);
+  selectedCompliancePlayers.forEach(key => {
+    if(key === `${teamIndex}::${playerId}`) selectedCompliancePlayers.delete(key);
+  });
+  save();
+  renderTeams();
+  renderComplianceTable();
+  showToast('Player removed.');
+}
+
+function renderTeams(){
+  const container = document.getElementById('teams');
+  container.innerHTML = '';
+  data.teams.forEach((team,index) => {
+    const card = document.createElement('div');
+    card.className = 'team-card';
+
+    const head = document.createElement('div');
+    head.className = 'team-head';
+
+    const left = document.createElement('div');
+    const name = document.createElement('div');
+    name.className = 'team-name';
+    name.textContent = team.name;
+    const submitted = team.players.filter(p => p.formsSubmitted).length;
+    const compliant = team.players.filter(p => isComplianceComplete(p)).length;
+    const meta = document.createElement('div');
+    meta.className = 'team-meta';
+    meta.textContent = `${team.players.length} players • ${submitted} highlighted • ${compliant} compliance complete`;
+    left.appendChild(name);
+    left.appendChild(meta);
+
+    const actions = document.createElement('div');
+    actions.className = 'team-actions';
+    const renameInput = document.createElement('input');
+    renameInput.id = 'teamName' + index;
+    renameInput.value = team.name;
+    const renameBtn = document.createElement('button');
+    renameBtn.className = 'button ghost small';
+    renameBtn.type = 'button';
+    renameBtn.textContent = 'Rename Team';
+    renameBtn.addEventListener('click', () => renameTeam(index));
+    actions.appendChild(renameInput);
+    actions.appendChild(renameBtn);
+
+    head.appendChild(left);
+    head.appendChild(actions);
+    card.appendChild(head);
+
+    const list = document.createElement('div');
+    list.className = 'player-list';
+
+    if(team.players.length === 0){
+      const empty = document.createElement('div');
+      empty.className = 'empty';
+      empty.textContent = 'No players added yet.';
+      list.appendChild(empty);
+    } else {
+      team.players.forEach(player => {
+        const row = document.createElement('div');
+        row.className = 'player-row' + (player.formsSubmitted ? ' forms-ok' : '');
+
+        const main = document.createElement('div');
+        const playerName = document.createElement('div');
+        playerName.className = 'player-name';
+        playerName.textContent = player.name;
+        const playerSub = document.createElement('div');
+        playerSub.className = 'player-sub';
+        playerSub.textContent = `Position: ${player.pos}${player.number ? ' • #' + player.number : ''}${isComplianceComplete(player) ? ' • Compliance complete' : ' • Compliance pending'}`;
+        main.appendChild(playerName);
+        main.appendChild(playerSub);
+
+        const pos = document.createElement('div');
+        pos.className = 'pill';
+        pos.textContent = player.pos;
+
+        const status = document.createElement('div');
+        status.className = 'pill ' + (player.formsSubmitted ? 'ok' : 'pending');
+        status.textContent = player.formsSubmitted ? 'All forms submitted' : 'Forms pending';
+
+        const controls = document.createElement('div');
+        controls.className = 'controls';
+
+        const toggle = document.createElement('button');
+        toggle.className = 'button ' + (player.formsSubmitted ? 'warn' : 'ok') + ' small';
+        toggle.type = 'button';
+        toggle.textContent = player.formsSubmitted ? 'Mark Pending' : 'Mark Submitted';
+        toggle.addEventListener('click', () => toggleFormsSubmitted(index, player.id));
+
+        const complianceBtn = document.createElement('button');
+        complianceBtn.className = 'button secondary small';
+        complianceBtn.type = 'button';
+        complianceBtn.textContent = 'Compliance';
+        complianceBtn.addEventListener('click', () => openComplianceModal(index, player.id));
+
+        const remove = document.createElement('button');
+        remove.className = 'button danger small';
+        remove.type = 'button';
+        remove.textContent = 'Remove';
+        remove.addEventListener('click', () => deletePlayer(index, player.id));
+
+        controls.appendChild(toggle);
+        controls.appendChild(complianceBtn);
+        controls.appendChild(remove);
+
+        row.appendChild(main);
+        row.appendChild(pos);
+        row.appendChild(status);
+        row.appendChild(controls);
+        list.appendChild(row);
+      });
+    }
+
+    card.appendChild(list);
+    container.appendChild(card);
+  });
+}
+
+function getFixtureFormValues(prefix){
+  const ids = prefix === 'edit'
+    ? {
+        homeTeam:'editHomeTeam', awayTeam:'editAwayTeam', fixtureDate:'editFixtureDate', fixtureTime:'editFixtureTime',
+        fixtureVenue:'editFixtureVenue', fixtureCompetition:'editFixtureCompetition', fixtureReferee:'editFixtureReferee',
+        fixtureTransport:'editFixtureTransport', fixtureNotes:'editFixtureNotes'
+      }
+    : {
+        homeTeam:'homeTeam', awayTeam:'awayTeam', fixtureDate:'fixtureDate', fixtureTime:'fixtureTime',
+        fixtureVenue:'fixtureVenue', fixtureCompetition:'fixtureCompetition', fixtureReferee:'fixtureReferee',
+        fixtureTransport:'fixtureTransport', fixtureNotes:'fixtureNotes'
+      };
+
+  return {
+    homeIndex: parseInt(document.getElementById(ids.homeTeam).value, 10),
+    awayIndex: parseInt(document.getElementById(ids.awayTeam).value, 10),
+    date: document.getElementById(ids.fixtureDate).value,
+    time: document.getElementById(ids.fixtureTime).value || '00:00',
+    venue: document.getElementById(ids.fixtureVenue).value.trim(),
+    competition: document.getElementById(ids.fixtureCompetition).value.trim(),
+    referee: document.getElementById(ids.fixtureReferee).value.trim(),
+    transport: document.getElementById(ids.fixtureTransport).value.trim(),
+    notes: document.getElementById(ids.fixtureNotes).value.trim()
+  };
+}
+
+function validateFixture(fixture, silent=false){
+  if(Number.isNaN(fixture.homeIndex) || Number.isNaN(fixture.awayIndex) || !data.teams[fixture.homeIndex] || !data.teams[fixture.awayIndex]){
+    if(!silent) showToast('Select valid teams.', 'error');
+    return false;
+  }
+  if(fixture.homeIndex !== fixture.awayIndex){
+    if(!silent) showToast('Home and away age groups must be the same.', 'error');
+    return false;
+  }
+  if(!fixture.date){
+    if(!silent) showToast('Select a fixture date.', 'error');
+    return false;
+  }
+  return true;
+}
+
+function addFixture(){
+  const fixture = getFixtureFormValues('');
+  if(!validateFixture(fixture)) return;
+  const awayTeamName = (fixture.competition || '').trim();
+  if(awayTeamName === ''){
+    showToast('Enter the away team name.', 'error');
+    return;
+  }
+  const preparedFixture = {
+    id:makeId(),
+    homeIndex:Number(fixture.homeIndex),
+    awayIndex:Number(fixture.awayIndex),
+    date:fixture.date,
+    time:fixture.time || '00:00',
+    venue:fixture.venue,
+    competition:fixture.competition,
+    awayTeamName: awayTeamName,
+    referee:fixture.referee,
+    transport:fixture.transport,
+    notes:fixture.notes,
+    homeScore:0,
+    awayScore:0,
+    status:'Scheduled'
+  };
+  data.fixtures.push(preparedFixture);
+  sortFixtures();
+  save();
+  renderUpcomingFixtures();
+  renderFixtures();
+  renderStandings();
+  resetFixtureForm();
+  showToast('Fixture created successfully.');
+}
+
+function resetFixtureForm(){
+  document.getElementById('fixtureDate').value = '';
+  document.getElementById('fixtureTime').value = '';
+  document.getElementById('fixtureVenue').value = '';
+  document.getElementById('fixtureCompetition').value = '';
+  document.getElementById('fixtureReferee').value = '';
+  document.getElementById('fixtureTransport').value = '';
+  document.getElementById('fixtureNotes').value = '';
+}
+
+function buildFixtureCard(fixture, showCountdown=false){
+  const card = document.createElement('div');
+  card.className = 'fixture-card';
+  const home = data.teams[fixture.homeIndex] ? data.teams[fixture.homeIndex].name : 'Unknown Team';
+  const away = fixture.awayTeamName || fixture.competition || (data.teams[fixture.awayIndex] ? data.teams[fixture.awayIndex].name : 'Unknown Team');
+  const kickoff = fixtureToDate(fixture);
+
+  const head = document.createElement('div');
+  head.className = 'fixture-head';
+
+  const left = document.createElement('div');
+  const title = document.createElement('div');
+  title.className = 'fixture-title';
+  title.textContent = `${home} vs ${away}`;
+  const subtitle = document.createElement('div');
+  subtitle.className = 'fixture-sub';
+  subtitle.innerHTML = `<span class="live-dot"></span>Away Team: ${escapeHtml(away)} • ${escapeHtml(fixture.status || 'Scheduled')}`;
+  left.appendChild(title);
+  left.appendChild(subtitle);
+
+  const right = document.createElement('div');
+  right.className = 'fixture-date';
+  right.textContent = `${fixture.date}${fixture.time ? ' • ' + fixture.time : ''}`;
+
+  head.appendChild(left);
+  head.appendChild(right);
+  card.appendChild(head);
+
+  if(showCountdown){
+    const countdown = document.createElement('div');
+    countdown.className = 'fixture-countdown';
+    countdown.innerHTML = `<span class="live-dot"></span>Kick-off in ${formatCountdown(kickoff)}`;
+    card.appendChild(countdown);
+  }
+
+  const meta = document.createElement('div');
+  meta.className = 'fixture-meta';
+  [
+    {label:'Venue', value: fixture.venue || 'Not set'},
+    {label:'Referee', value: fixture.referee || 'Not set'},
+    {label:'Transport / Arrival', value: fixture.transport || 'Not set'},
+    {label:'Away Team Name', value: fixture.awayTeamName || fixture.competition || 'Not set'}
+  ].forEach(item => {
+    const box = document.createElement('div');
+    box.className = 'meta-box';
+    const l = document.createElement('div');
+    l.className = 'meta-label';
+    l.textContent = item.label;
+    const v = document.createElement('div');
+    v.className = 'meta-value';
+    v.textContent = item.value;
+    box.appendChild(l);
+    box.appendChild(v);
+    meta.appendChild(box);
+  });
+  card.appendChild(meta);
+
+  const notes = document.createElement('div');
+  notes.className = 'notes';
+  notes.textContent = fixture.notes || 'No extra notes added.';
+  card.appendChild(notes);
+
+  const actions = document.createElement('div');
+  actions.className = 'fixture-actions';
+
+  const editBtn = document.createElement('button');
+  editBtn.className = 'button primary small';
+  editBtn.type = 'button';
+  editBtn.textContent = 'Edit';
+  editBtn.addEventListener('click', () => openFixtureModal(fixture.id));
+
+  const duplicateBtn = document.createElement('button');
+  duplicateBtn.className = 'button secondary small';
+  duplicateBtn.type = 'button';
+  duplicateBtn.textContent = 'Duplicate';
+  duplicateBtn.addEventListener('click', () => duplicateFixture(fixture.id));
+
+  const deleteBtn = document.createElement('button');
+  deleteBtn.className = 'button danger small';
+  deleteBtn.type = 'button';
+  deleteBtn.textContent = 'Delete';
+  deleteBtn.addEventListener('click', () => deleteFixture(fixture.id));
+
+  actions.appendChild(editBtn);
+  actions.appendChild(duplicateBtn);
+  actions.appendChild(deleteBtn);
+  card.appendChild(actions);
+  return card;
+}
+
+function renderUpcomingFixtures(){
+  const container = document.getElementById('upcomingFixtures');
+  container.innerHTML = '';
+  const upcoming = getUpcomingFixtures();
+  if(upcoming.length === 0){
+    const empty = document.createElement('div');
+    empty.className = 'empty';
+    empty.textContent = 'No upcoming fixtures scheduled.';
+    container.appendChild(empty);
+    return;
+  }
+  upcoming.forEach(fixture => container.appendChild(buildFixtureCard(fixture, true)));
+}
+
+function renderFixtures(){
+  const container = document.getElementById('fixtures');
+  container.innerHTML = '';
+  if(data.fixtures.length === 0){
+    const empty = document.createElement('div');
+    empty.className = 'empty';
+    empty.textContent = 'No fixtures added yet.';
+    container.appendChild(empty);
+    return;
+  }
+  data.fixtures.forEach(fixture => container.appendChild(buildFixtureCard(fixture, false)));
+}
+
+function deleteFixture(fixtureId){
+  data.fixtures = data.fixtures.filter(f => f.id !== fixtureId);
+  save();
+  renderUpcomingFixtures();
+  renderFixtures();
+  renderStandings();
+  closeFixtureModal();
+  showToast('Fixture deleted.');
+}
+
+function duplicateFixture(fixtureId){
+  const fixture = data.fixtures.find(f => f.id === fixtureId);
+  if(!fixture) return;
+  data.fixtures.push({...copy(fixture), id:makeId()});
+  sortFixtures();
+  save();
+  renderUpcomingFixtures();
+  renderFixtures();
+  renderStandings();
+  showToast('Fixture duplicated.');
+}
+
+function openFixtureModal(fixtureId){
+  const fixture = data.fixtures.find(f => f.id === fixtureId);
+  if(!fixture) return;
+  populateTeamSelects();
+  document.getElementById('editFixtureId').value = fixture.id;
+  document.getElementById('editHomeTeam').value = String(fixture.homeIndex);
+  document.getElementById('editAwayTeam').value = String(fixture.awayIndex);
+  document.getElementById('editFixtureDate').value = fixture.date;
+  document.getElementById('editFixtureTime').value = fixture.time;
+  document.getElementById('editFixtureVenue').value = fixture.venue;
+  document.getElementById('editFixtureCompetition').value = fixture.competition;
+  document.getElementById('editFixtureReferee').value = fixture.referee;
+  document.getElementById('editFixtureTransport').value = fixture.transport;
+  document.getElementById('editFixtureNotes').value = fixture.notes;
+  syncFixtureAgeGroups();
+  document.getElementById('fixtureModalOverlay').classList.add('show');
+}
+
+function closeFixtureModal(){
+  document.getElementById('fixtureModalOverlay').classList.remove('show');
+}
+
+function saveFixtureEdit(){
+  const fixtureId = document.getElementById('editFixtureId').value;
+  const index = data.fixtures.findIndex(f => f.id === fixtureId);
+  if(index === -1) return;
+  const updated = {id:fixtureId, ...getFixtureFormValues('edit')};
+  const awayTeamName = (updated.competition || '').trim();
+  if(awayTeamName === ''){
+    showToast('Enter the away team name.', 'error');
+    return;
+  }
+  updated.homeIndex = Number(updated.homeIndex);
+  updated.awayIndex = Number(updated.awayIndex);
+  updated.time = updated.time || '00:00';
+  updated.homeScore = data.fixtures[index].homeScore || 0;
+  updated.awayScore = data.fixtures[index].awayScore || 0;
+  updated.status = data.fixtures[index].status || 'Scheduled';
+  updated.awayTeamName = awayTeamName;
+  if(!validateFixture(updated)) return;
+  data.fixtures[index] = updated;
+  sortFixtures();
+  save();
+  renderUpcomingFixtures();
+  renderFixtures();
+  renderStandings();
+  closeFixtureModal();
+  showToast('Fixture updated.');
+}
+
+function getStandingsData(){
+  const table = data.teams.map((team, index) => ({teamIndex:index, teamName:team.name, p:0,w:0,d:0,l:0,gf:0,ga:0,gd:0,pts:0}));
+  data.fixtures.forEach(fixture => {
+    if((fixture.status || '').toLowerCase() !== 'full time') return;
+    const home = table[fixture.homeIndex];
+    const away = table[fixture.awayIndex];
+    if(!home || !away) return;
+    home.p += 1; away.p += 1;
+    home.gf += fixture.homeScore; home.ga += fixture.awayScore;
+    away.gf += fixture.awayScore; away.ga += fixture.homeScore;
+    if(fixture.homeScore > fixture.awayScore){ home.w += 1; away.l += 1; home.pts += 3; }
+    else if(fixture.homeScore < fixture.awayScore){ away.w += 1; home.l += 1; away.pts += 3; }
+    else { home.d += 1; away.d += 1; home.pts += 1; away.pts += 1; }
+  });
+  table.forEach(row => row.gd = row.gf - row.ga);
+  table.sort((a,b) => b.pts - a.pts || b.gd - a.gd || b.gf - a.gf || a.teamName.localeCompare(b.teamName));
+  return table;
+}
+
+function renderStandings(){
+  const tbody = document.getElementById('standingsBody');
+  tbody.innerHTML = '';
+  const table = getStandingsData();
+  table.forEach((row, i) => {
+    const tr = document.createElement('tr');
+    tr.innerHTML = `<td>${i + 1}</td><td>${escapeHtml(row.teamName)}</td><td>${row.p}</td><td>${row.w}</td><td>${row.d}</td><td>${row.l}</td><td>${row.gf}</td><td>${row.ga}</td><td>${row.gd}</td><td>${row.pts}</td>`;
+    tbody.appendChild(tr);
+  });
+}
+
+function getSelectedComplianceTargets(){
+  const targets = [];
+  selectedCompliancePlayers.forEach(key => {
+    const [teamIndexText, playerId] = key.split('::');
+    const teamIndex = parseInt(teamIndexText, 10);
+    const team = data.teams[teamIndex];
+    if(!team) return;
+    const player = team.players.find(p => p.id === playerId);
+    if(!player) return;
+    targets.push({teamIndex, player});
+  });
+  return targets;
+}
+
+function syncComplianceHeaderCheckbox(){
+  const headerCheckbox = document.getElementById('selectAllComplianceRows');
+  if(!headerCheckbox) return;
+  const totalPlayers = data.teams.reduce((sum, team) => sum + team.players.length, 0);
+  headerCheckbox.checked = totalPlayers > 0 && selectedCompliancePlayers.size === totalPlayers;
+  headerCheckbox.indeterminate = selectedCompliancePlayers.size > 0 && selectedCompliancePlayers.size < totalPlayers;
+}
+
+function setAllComplianceSelection(checked){
+  selectedCompliancePlayers.clear();
+  if(checked){
+    data.teams.forEach((team, teamIndex) => {
+      team.players.forEach(player => selectedCompliancePlayers.add(`${teamIndex}::${player.id}`));
+    });
+  }
+  renderComplianceTable();
+}
+
+function clearBulkComplianceInputs(){
+  document.getElementById('bulkIndemnityForms').checked = false;
+  document.getElementById('bulkBirthCertificate').checked = false;
+  document.getElementById('bulkIdPhoto').checked = false;
+  document.getElementById('bulkIndemnityForm').checked = false;
+  document.getElementById('bulkTransportPaid').checked = false;
+  document.getElementById('bulkKitIssued').checked = false;
+  document.getElementById('bulkKitReturned').checked = false;
+  document.getElementById('bulkFormsSubmitted').checked = false;
+  document.getElementById('bulkPaymentStatus').value = '';
+}
+
+function applyBulkCompliance(){
+  const targets = getSelectedComplianceTargets();
+  if(targets.length === 0){
+    showToast('Select one or more players first.', 'error');
+    return;
+  }
+
+  const updates = {
+    indemnityFormsSubmitted: document.getElementById('bulkIndemnityForms').checked,
+    certifiedBirthCertificateSubmitted: document.getElementById('bulkBirthCertificate').checked,
+    idPhotoSubmitted: document.getElementById('bulkIdPhoto').checked,
+    indemnityFormSubmitted: document.getElementById('bulkIndemnityForm').checked,
+    transportPaid: document.getElementById('bulkTransportPaid').checked,
+    kitIssued: document.getElementById('bulkKitIssued').checked,
+    kitReturned: document.getElementById('bulkKitReturned').checked,
+    formsSubmitted: document.getElementById('bulkFormsSubmitted').checked,
+    paymentStatus: document.getElementById('bulkPaymentStatus').value
+  };
+
+  const hasAnyUpdate = updates.indemnityFormsSubmitted || updates.certifiedBirthCertificateSubmitted || updates.idPhotoSubmitted || updates.indemnityFormSubmitted || updates.transportPaid || updates.kitIssued || updates.kitReturned || updates.formsSubmitted || updates.paymentStatus !== '';
+  if(!hasAnyUpdate){
+    showToast('Choose at least one compliance update.', 'error');
+    return;
+  }
+
+  targets.forEach(({player}) => {
+    player.compliance = {...defaultCompliance(), ...(player.compliance || {})};
+    if(updates.indemnityFormsSubmitted) player.compliance.indemnityFormsSubmitted = true;
+    if(updates.certifiedBirthCertificateSubmitted) player.compliance.certifiedBirthCertificateSubmitted = true;
+    if(updates.idPhotoSubmitted) player.compliance.idPhotoSubmitted = true;
+    if(updates.indemnityFormSubmitted) player.compliance.indemnityFormSubmitted = true;
+    if(updates.transportPaid) player.compliance.transportPaid = true;
+    if(updates.kitIssued) player.compliance.kitIssued = true;
+    if(updates.kitReturned) player.compliance.kitReturned = true;
+    if(updates.paymentStatus !== '') player.compliance.paymentStatus = updates.paymentStatus;
+    if(updates.formsSubmitted) player.formsSubmitted = true;
+  });
+
+  save();
+  renderTeams();
+  renderComplianceTable();
+  clearBulkComplianceInputs();
+  showToast('Bulk compliance updated.');
+}
+
+function renderComplianceTable(){
+  const tbody = document.getElementById('complianceBody');
+  tbody.innerHTML = '';
+  let any = false;
+  data.teams.forEach((team, teamIndex) => {
+    team.players.forEach(player => {
+      any = true;
+      const c = {...defaultCompliance(), ...(player.compliance || {})};
+      const selectedKey = `${teamIndex}::${player.id}`;
+      const tr = document.createElement('tr');
+      tr.innerHTML = `
+        <td><input type="checkbox" class="compliance-row-selector" data-team-index="${teamIndex}" data-player-id="${player.id}" ${selectedCompliancePlayers.has(selectedKey) ? 'checked' : ''}></td>
+        <td>${escapeHtml(team.name)}</td>
+        <td>${escapeHtml(player.name)}</td>
+        <td>${escapeHtml(player.pos)}</td>
+        <td>${c.indemnityFormsSubmitted ? 'Yes' : 'No'}</td>
+        <td>${c.certifiedBirthCertificateSubmitted ? 'Yes' : 'No'}</td>
+        <td>${c.idPhotoSubmitted ? 'Yes' : 'No'}</td>
+        <td>${c.transportPaid ? 'Yes' : 'No'}</td>
+        <td>${escapeHtml(c.paymentStatus)}</td>
+        <td>${c.kitIssued ? 'Yes' : 'No'}</td>
+        <td>${c.kitReturned ? 'Yes' : 'No'}</td>
+        <td>${isComplianceComplete(player) ? 'Complete' : 'Pending'}</td>
+        <td><button class="button secondary small" type="button">Edit</button></td>
+      `;
+      const btn = tr.querySelector('button');
+      btn.addEventListener('click', () => openComplianceModal(teamIndex, player.id));
+      const selector = tr.querySelector('.compliance-row-selector');
+      selector.addEventListener('change', function(){
+        const key = `${teamIndex}::${player.id}`;
+        if(this.checked) selectedCompliancePlayers.add(key);
+        else selectedCompliancePlayers.delete(key);
+        syncComplianceHeaderCheckbox();
+      });
+      tbody.appendChild(tr);
+    });
+  });
+  if(!any){
+    const tr = document.createElement('tr');
+    tr.innerHTML = '<td colspan="13">No players available yet.</td>';
+    tbody.appendChild(tr);
+  }
+  syncComplianceHeaderCheckbox();
+}
+
+function openComplianceModal(teamIndex, playerId){
+  const team = data.teams[teamIndex];
+  if(!team) return;
+  const player = team.players.find(p => p.id === playerId);
+  if(!player) return;
+  const c = {...defaultCompliance(), ...(player.compliance || {})};
+  document.getElementById('compliancePlayerId').value = player.id;
+  document.getElementById('complianceTeamIndex').value = String(teamIndex);
+  document.getElementById('compliancePlayerName').value = player.name;
+  document.getElementById('complianceTeamName').value = team.name;
+  document.getElementById('cmpIndemnityForms').checked = c.indemnityFormsSubmitted;
+  document.getElementById('cmpBirthCertificate').checked = c.certifiedBirthCertificateSubmitted;
+  document.getElementById('cmpIdPhoto').checked = c.idPhotoSubmitted;
+  document.getElementById('cmpIndemnityForm').checked = c.indemnityFormSubmitted;
+  document.getElementById('cmpTransportPaid').checked = c.transportPaid;
+  document.getElementById('cmpPaymentStatus').value = c.paymentStatus;
+  document.getElementById('cmpKitIssued').checked = c.kitIssued;
+  document.getElementById('cmpKitReturned').checked = c.kitReturned;
+  document.getElementById('cmpFormsSubmitted').checked = !!player.formsSubmitted;
+  document.getElementById('complianceModalOverlay').classList.add('show');
+}
+
+function closeComplianceModal(){
+  document.getElementById('complianceModalOverlay').classList.remove('show');
+}
+
+function saveCompliance(){
+  const playerId = document.getElementById('compliancePlayerId').value;
+  const teamIndex = parseInt(document.getElementById('complianceTeamIndex').value, 10);
+  const team = data.teams[teamIndex];
+  if(!team) return;
+  const player = team.players.find(p => p.id === playerId);
+  if(!player) return;
+
+  player.compliance = {
+    indemnityFormsSubmitted: document.getElementById('cmpIndemnityForms').checked,
+    certifiedBirthCertificateSubmitted: document.getElementById('cmpBirthCertificate').checked,
+    idPhotoSubmitted: document.getElementById('cmpIdPhoto').checked,
+    indemnityFormSubmitted: document.getElementById('cmpIndemnityForm').checked,
+    transportPaid: document.getElementById('cmpTransportPaid').checked,
+    paymentStatus: document.getElementById('cmpPaymentStatus').value,
+    kitIssued: document.getElementById('cmpKitIssued').checked,
+    kitReturned: document.getElementById('cmpKitReturned').checked
+  };
+  player.formsSubmitted = document.getElementById('cmpFormsSubmitted').checked;
+  save();
+  renderTeams();
+  renderComplianceTable();
+  closeComplianceModal();
+  showToast('Compliance updated.');
+}
+
+function markComplianceComplete(){
+  document.getElementById('cmpIndemnityForms').checked = true;
+  document.getElementById('cmpBirthCertificate').checked = true;
+  document.getElementById('cmpIdPhoto').checked = true;
+  document.getElementById('cmpIndemnityForm').checked = true;
+  document.getElementById('cmpTransportPaid').checked = true;
+  document.getElementById('cmpPaymentStatus').value = 'Paid';
+  document.getElementById('cmpKitIssued').checked = true;
+  document.getElementById('cmpFormsSubmitted').checked = true;
+}
+
+function escapeHtml(text){
+  return String(text)
+    .replace(/&/g, '&amp;')
+    .replace(/</g, '&lt;')
+    .replace(/>/g, '&gt;')
+    .replace(/"/g, '&quot;')
+    .replace(/'/g, '&#039;');
+}
+
+function downloadBlob(filename, content, type){
+  const blob = new Blob([content], {type});
+  const url = URL.createObjectURL(blob);
+  const a = document.createElement('a');
+  a.href = url;
+  a.download = filename;
+  document.body.appendChild(a);
+  a.click();
+  a.remove();
+  setTimeout(() => URL.revokeObjectURL(url), 1000);
+}
+
+function openPrintWindow(title, bodyHtml){
+  const win = window.open('', '_blank', 'width=1200,height=900');
+  if(!win) return;
+  win.document.write(`<!DOCTYPE html><html><head><title>${escapeHtml(title)}</title><style>
+    body{font-family:Arial,sans-serif;padding:24px;color:#111}
+    h1{margin:0 0 12px 0}
+    h2{margin:20px 0 10px 0}
+    table{width:100%;border-collapse:collapse;margin-top:10px}
+    th,td{border:1px solid #999;padding:8px;text-align:left;font-size:12px}
+    th{background:#eee}
+    .small{font-size:11px;color:#444}
+    .section{margin-bottom:24px}
+  </style></head><body><h1>${escapeHtml(title)}</h1>${bodyHtml}</body></html>`);
+  win.document.close();
+  win.focus();
+  setTimeout(() => win.print(), 250);
+}
+
+function exportSquadsToPDF(){
+  let html = '<div class="small">Print this page and choose Save as PDF.</div>';
+  data.teams.forEach(team => {
+    html += `<div class="section"><h2>${escapeHtml(team.name)}</h2><table><thead><tr><th>#</th><th>Player</th><th>Position</th><th>Number</th><th>Forms Submitted</th><th>Compliance Complete</th></tr></thead><tbody>`;
+    if(team.players.length === 0){
+      html += '<tr><td colspan="6">No players added.</td></tr>';
+    } else {
+      team.players.forEach((player, i) => {
+        html += `<tr><td>${i + 1}</td><td>${escapeHtml(player.name)}</td><td>${escapeHtml(player.pos)}</td><td>${escapeHtml(player.number || '')}</td><td>${player.formsSubmitted ? 'Yes' : 'No'}</td><td>${isComplianceComplete(player) ? 'Yes' : 'No'}</td></tr>`;
+      });
+    }
+    html += '</tbody></table></div>';
+  });
+  openPrintWindow('Squads Report', html);
+}
+
+function exportFixturesToPDF(){
+  let html = '<div class="small">Print this page and choose Save as PDF.</div>';
+  html += '<table><thead><tr><th>Date</th><th>Time</th><th>Fixture</th><th>Venue</th><th>Away Team Name</th><th>Referee</th><th>Transport</th><th>Notes</th></tr></thead><tbody>';
+  if(data.fixtures.length === 0){
+    html += '<tr><td colspan="8">No fixtures added.</td></tr>';
+  } else {
+    data.fixtures.forEach(fixture => {
+      const home = data.teams[fixture.homeIndex] ? data.teams[fixture.homeIndex].name : 'Unknown Team';
+      const away = fixture.awayTeamName || fixture.competition || (data.teams[fixture.awayIndex] ? data.teams[fixture.awayIndex].name : 'Unknown Team');
+      html += `<tr><td>${escapeHtml(fixture.date)}</td><td>${escapeHtml(fixture.time || '')}</td><td>${escapeHtml(home + ' vs ' + away)}</td><td>${escapeHtml(fixture.venue || '')}</td><td>${escapeHtml(away)}</td><td>${escapeHtml(fixture.referee || '')}</td><td>${escapeHtml(fixture.transport || '')}</td><td>${escapeHtml(fixture.notes || '')}</td></tr>`;
+    });
+  }
+  html += '</tbody></table>';
+  openPrintWindow('Fixtures Report', html);
+}
+
+function exportStandingsToCSV(){
+  const rows = [['Rank','Team','P','W','D','L','GF','GA','GD','PTS']];
+  getStandingsData().forEach((row, index) => rows.push([index + 1, row.teamName, row.p, row.w, row.d, row.l, row.gf, row.ga, row.gd, row.pts]));
+  const csv = rows.map(row => row.map(value => `"${String(value).replace(/"/g, '""')}"`).join(',')).join('\n');
+  downloadBlob('standings.csv', csv, 'text/csv;charset=utf-8;');
+}
+
+function exportComplianceReport(){
+  let html = '<div class="small">Print this page and choose Save as PDF.</div>';
+  html += '<table><thead><tr><th>Team</th><th>Player</th><th>Position</th><th>Indemnity Forms</th><th>Birth Certificate</th><th>ID Photo</th><th>Indemnity Form</th><th>Transport Paid</th><th>Payment Status</th><th>Kit Issued</th><th>Kit Returned</th><th>Highlighted</th><th>Complete</th></tr></thead><tbody>';
+  let count = 0;
+  data.teams.forEach(team => {
+    team.players.forEach(player => {
+      count += 1;
+      const c = {...defaultCompliance(), ...(player.compliance || {})};
+      html += `<tr><td>${escapeHtml(team.name)}</td><td>${escapeHtml(player.name)}</td><td>${escapeHtml(player.pos)}</td><td>${c.indemnityFormsSubmitted ? 'Yes' : 'No'}</td><td>${c.certifiedBirthCertificateSubmitted ? 'Yes' : 'No'}</td><td>${c.idPhotoSubmitted ? 'Yes' : 'No'}</td><td>${c.indemnityFormSubmitted ? 'Yes' : 'No'}</td><td>${c.transportPaid ? 'Yes' : 'No'}</td><td>${escapeHtml(c.paymentStatus)}</td><td>${c.kitIssued ? 'Yes' : 'No'}</td><td>${c.kitReturned ? 'Yes' : 'No'}</td><td>${player.formsSubmitted ? 'Yes' : 'No'}</td><td>${isComplianceComplete(player) ? 'Yes' : 'No'}</td></tr>`;
+    });
+  });
+  if(count === 0) html += '<tr><td colspan="13">No players available.</td></tr>';
+  html += '</tbody></table>';
+  openPrintWindow('Compliance Report', html);
+}
+
+function bindExportButtons(){
+  document.getElementById('exportSquadsPdfBtn').addEventListener('click', exportSquadsToPDF);
+  document.getElementById('exportFixturesPdfBtn').addEventListener('click', exportFixturesToPDF);
+  document.getElementById('exportStandingsCsvBtn').addEventListener('click', exportStandingsToCSV);
+  document.getElementById('exportCompliancePdfBtn').addEventListener('click', exportComplianceReport);
+}
+
+function startCountdownRefresh(){
+  if(countdownInterval) clearInterval(countdownInterval);
+  countdownInterval = setInterval(() => {
+    renderSummary();
+    renderUpcomingFixtures();
+  }, 60000);
+}
+
+function syncFixtureAgeGroups(){
+  const home = document.getElementById('homeTeam');
+  const away = document.getElementById('awayTeam');
+  if(home && away) away.value = home.value;
+  const editHome = document.getElementById('editHomeTeam');
+  const editAway = document.getElementById('editAwayTeam');
+  if(editHome && editAway) editAway.value = editHome.value;
+}
+
+function bindUi(){
+  document.getElementById('addPlayerBtn').addEventListener('click', addPlayer);
+  document.getElementById('createFixtureBtn').addEventListener('click', addFixture);
+  document.getElementById('homeTeam').addEventListener('change', syncFixtureAgeGroups);
+  document.getElementById('awayTeam').addEventListener('change', syncFixtureAgeGroups);
+  document.getElementById('editHomeTeam').addEventListener('change', syncFixtureAgeGroups);
+  document.getElementById('editAwayTeam').addEventListener('change', syncFixtureAgeGroups);
+  document.getElementById('clearFixtureFormBtn').addEventListener('click', resetFixtureForm);
+
+  document.getElementById('closeFixtureModalBtn').addEventListener('click', closeFixtureModal);
+  document.getElementById('saveFixtureEditBtn').addEventListener('click', saveFixtureEdit);
+  document.getElementById('deleteFixtureFromModalBtn').addEventListener('click', () => {
+    const id = document.getElementById('editFixtureId').value;
+    if(id) deleteFixture(id);
+  });
+  document.getElementById('fixtureModalOverlay').addEventListener('click', event => { if(event.target.id === 'fixtureModalOverlay') closeFixtureModal(); });
+  document.getElementById('openFixtureCreatorBtn').addEventListener('click', () => document.getElementById('fixtureCreatorSection').scrollIntoView({behavior:'smooth', block:'start'}));
+  document.getElementById('scrollTeamsBtn').addEventListener('click', () => document.getElementById('teamsSection').scrollIntoView({behavior:'smooth', block:'start'}));
+  document.getElementById('scrollComplianceBtn').addEventListener('click', () => document.getElementById('complianceSection').scrollIntoView({behavior:'smooth', block:'start'}));
+
+  document.getElementById('closeComplianceModalBtn').addEventListener('click', closeComplianceModal);
+  document.getElementById('saveComplianceBtn').addEventListener('click', saveCompliance);
+  document.getElementById('markComplianceCompleteBtn').addEventListener('click', markComplianceComplete);
+  document.getElementById('complianceModalOverlay').addEventListener('click', event => { if(event.target.id === 'complianceModalOverlay') closeComplianceModal(); });
+
+  document.getElementById('applyBulkComplianceBtn').addEventListener('click', applyBulkCompliance);
+  document.getElementById('selectAllPlayersBtn').addEventListener('click', () => setAllComplianceSelection(true));
+  document.getElementById('clearSelectedPlayersBtn').addEventListener('click', () => setAllComplianceSelection(false));
+  document.getElementById('selectAllComplianceRows').addEventListener('change', function(){ setAllComplianceSelection(this.checked); });
+
+  document.addEventListener('keydown', event => {
+    if(event.key === 'Escape'){
+      closeFixtureModal();
+      closeComplianceModal();
+    }
+  });
+
+  bindExportButtons();
+}
+
+function init(){
+  normalizeData(data);
+  sortFixtures();
+  populateTeamSelects();
+  syncFixtureAgeGroups();
+  renderSummary();
+  renderTeams();
+  renderUpcomingFixtures();
+  renderFixtures();
+  renderStandings();
+  renderComplianceTable();
+  bindUi();
+  startCountdownRefresh();
+}
+
+init();
+</script>
+</body>
+</html>
