@@ -5,6 +5,7 @@
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
 <title>School League Manager Pro</title>
 <style>
+@import url('https://fonts.googleapis.com/css2?family=Manrope:wght@400;600;700;800&display=swap');
 :root{
   --bg:#050505;
   --bg-2:#0d0d0d;
@@ -27,7 +28,7 @@
   --radius-md:16px;
 }
 *{box-sizing:border-box}
-html,body{margin:0;min-height:100%;font-family:Inter,Segoe UI,Roboto,Arial,sans-serif;color:var(--text);scroll-behavior:smooth}
+html,body{margin:0;min-height:100%;font-family:Manrope,Inter,Segoe UI,Roboto,Arial,sans-serif;color:var(--text);scroll-behavior:smooth}
 body{
   background:
     radial-gradient(circle at 15% 10%, rgba(255,47,67,0.15), transparent 18%),
@@ -60,7 +61,19 @@ body::before{
   from{opacity:0;transform:translateY(12px)}
   to{opacity:1;transform:translateY(0)}
 }
+.ambient-bg{
+  position:fixed;
+  inset:0;
+  pointer-events:none;
+  z-index:0;
+  background:
+    radial-gradient(circle at 10% 20%, rgba(255,47,67,0.14), transparent 22%),
+    radial-gradient(circle at 90% 75%, rgba(59,167,255,0.14), transparent 24%),
+    radial-gradient(circle at 50% 50%, rgba(255,255,255,0.04), transparent 30%);
+  filter:blur(2px);
+}
 .app{max-width:1600px;margin:0 auto;padding:24px;animation:fadeUp 0.45s ease}
+.app{position:relative;z-index:1}
 .hero{
   position:relative;
   overflow:hidden;
@@ -71,8 +84,10 @@ body::before{
     radial-gradient(circle at 12% 18%, rgba(255,47,67,0.28), transparent 18%),
     radial-gradient(circle at 88% 12%, rgba(255,47,67,0.18), transparent 16%),
     linear-gradient(135deg, rgba(12,12,12,0.98), rgba(20,20,20,0.96));
-  box-shadow:var(--shadow), inset 0 0 80px rgba(255,47,67,0.05);
+  box-shadow:var(--shadow), inset 0 0 80px rgba(255,47,67,0.05), 0 0 0 1px rgba(255,255,255,0.05);
   margin-bottom:20px;
+  transform-style:preserve-3d;
+  transition:transform 0.35s ease, box-shadow 0.35s ease;
 }
 .hero::before{content:'';position:absolute;inset:auto 0 0 0;height:3px;background:linear-gradient(90deg, transparent, var(--red), transparent)}
 .hero::after{content:'';position:absolute;top:0;left:-30%;width:22%;height:100%;background:linear-gradient(90deg, transparent, rgba(255,255,255,0.07), transparent);animation:liveSweep 5.5s linear infinite}
@@ -91,9 +106,38 @@ body::before{
 .badge-ball::after{inset:20px}
 .hero h1{margin:0;font-size:34px;letter-spacing:0.3px}
 .hero p{margin:8px 0 0 0;color:var(--muted);font-size:14px;line-height:1.6;max-width:900px}
+.visual-strip{
+  margin-top:20px;
+  display:grid;
+  grid-template-columns:1.2fr 1fr 1fr;
+  gap:12px;
+}
+.visual-tile{
+  min-height:120px;
+  border-radius:18px;
+  border:1px solid rgba(255,255,255,0.14);
+  position:relative;
+  overflow:hidden;
+  box-shadow:inset 0 0 35px rgba(0,0,0,0.4), 0 14px 28px rgba(0,0,0,0.35);
+  transform:translateZ(0);
+  transition:transform 0.4s ease, filter 0.4s ease;
+}
+.visual-tile:hover{transform:translateY(-3px) scale(1.01);filter:saturate(1.15)}
+.visual-tile::after{
+  content:'';
+  position:absolute;inset:0;
+  background:linear-gradient(160deg, rgba(0,0,0,0.0), rgba(0,0,0,0.55));
+}
+.visual-tile .tile-text{
+  position:absolute;left:14px;bottom:12px;right:14px;z-index:2;
+  font-size:12px;font-weight:700;line-height:1.4;letter-spacing:0.4px;
+}
+.visual-1{background:url('https://images.unsplash.com/photo-1574629810360-7efbbe195018?auto=format&fit=crop&w=1200&q=80') center/cover no-repeat}
+.visual-2{background:url('https://images.unsplash.com/photo-1511886929837-354d827aae26?auto=format&fit=crop&w=1200&q=80') center/cover no-repeat}
+.visual-3{background:url('https://images.unsplash.com/photo-1521412644187-c49fa049e84d?auto=format&fit=crop&w=1200&q=80') center/cover no-repeat}
 .hero-actions{display:flex;gap:10px;flex-wrap:wrap}
 .button{border:none;border-radius:999px;padding:12px 18px;font-weight:800;cursor:pointer;transition:transform 0.2s ease, filter 0.2s ease, box-shadow 0.2s ease, background 0.2s ease;color:white}
-.button:hover{transform:translateY(-2px);filter:brightness(1.06)}
+.button:hover{transform:translateY(-2px) scale(1.01);filter:brightness(1.08)}
 .button:active{transform:translateY(0)}
 .button.primary{background:linear-gradient(135deg, var(--red-2), var(--red));box-shadow:0 10px 28px rgba(255,47,67,0.22)}
 .button.secondary{background:linear-gradient(135deg, #2b2b2b, #151515);border:1px solid var(--line-strong)}
@@ -111,7 +155,8 @@ body::before{
 .stat-label{font-size:12px;color:var(--muted);text-transform:uppercase;letter-spacing:1px}
 .stat-value{font-size:28px;font-weight:900;margin-top:6px}
 .layout{display:grid;grid-template-columns:1fr 1.1fr 1.5fr;gap:18px}
-.card{position:relative;background:linear-gradient(180deg, rgba(15,15,15,0.98), rgba(20,20,20,0.96));border:1px solid rgba(255,255,255,0.08);border-radius:var(--radius-xl);padding:20px;box-shadow:var(--shadow), inset 0 0 50px rgba(255,47,67,0.03);overflow:hidden}
+.card{position:relative;background:linear-gradient(180deg, rgba(15,15,15,0.98), rgba(20,20,20,0.96));border:1px solid rgba(255,255,255,0.08);border-radius:var(--radius-xl);padding:20px;box-shadow:var(--shadow), inset 0 0 50px rgba(255,47,67,0.03);overflow:hidden;backdrop-filter:blur(4px);transition:transform 0.3s ease, box-shadow 0.3s ease, border-color 0.3s ease}
+.card:hover{transform:translateY(-2px);box-shadow:0 24px 48px rgba(0,0,0,0.5), inset 0 0 60px rgba(255,47,67,0.04);border-color:rgba(255,47,67,0.20)}
 .card::before{content:'';position:absolute;top:0;left:0;right:0;height:2px;background:linear-gradient(90deg, transparent, rgba(255,47,67,0.85), transparent)}
 .card h2{margin:0 0 16px 0;font-size:18px;letter-spacing:0.3px}
 .stack{display:flex;flex-direction:column;gap:12px}
@@ -176,6 +221,15 @@ tr:hover td{background:rgba(255,255,255,0.03)}
 .check-item input{width:auto;transform:scale(1.1)}
 .export-grid{display:grid;grid-template-columns:repeat(4,1fr);gap:12px}
 .footer-note{margin-top:18px;color:var(--muted);font-size:12px;text-align:right}
+.reveal{
+  opacity:0;
+  transform:translateY(20px) scale(0.99);
+  transition:opacity 0.55s ease, transform 0.55s ease;
+}
+.reveal.visible{
+  opacity:1;
+  transform:translateY(0) scale(1);
+}
 .modal-overlay{position:fixed;inset:0;background:rgba(0,0,0,0.72);backdrop-filter:blur(6px);display:none;align-items:center;justify-content:center;padding:20px;z-index:999}
 .modal-overlay.show{display:flex;animation:fadeUp 0.2s ease}
 .modal{width:min(980px, 100%);max-height:92vh;overflow:auto;border:1px solid var(--line-strong);border-radius:28px;background:linear-gradient(180deg, rgba(10,10,10,0.98), rgba(18,18,18,0.98));box-shadow:0 30px 90px rgba(0,0,0,0.55);padding:22px}
@@ -188,13 +242,14 @@ tr:hover td{background:rgba(255,255,255,0.03)}
 .toast-item.error{border-color:rgba(255,47,67,0.35)}
 @media (max-width:1400px){.summary{grid-template-columns:repeat(4,1fr)}}
 @media (max-width:1280px){.layout{grid-template-columns:1fr 1fr}.section-full{grid-column:span 2}}
-@media (max-width:980px){.summary,.team-grid,.fixture-list,.grid-2,.grid-3,.check-grid,.export-grid{grid-template-columns:1fr}.layout{grid-template-columns:1fr}.section-full{grid-column:span 1}.player-row{grid-template-columns:1fr}}
+@media (max-width:980px){.summary,.team-grid,.fixture-list,.grid-2,.grid-3,.check-grid,.export-grid,.visual-strip{grid-template-columns:1fr}.layout{grid-template-columns:1fr}.section-full{grid-column:span 1}.player-row{grid-template-columns:1fr}}
 @media (max-width:640px){.app{padding:16px}.hero{padding:20px}.hero h1{font-size:26px}.badge-ball{width:60px;height:60px}}
 </style>
 </head>
 <body>
+<div class="ambient-bg"></div>
 <div class="app">
-  <section class="hero">
+  <section class="hero reveal" id="heroPanel">
     <div class="hero-top">
       <div class="brand">
         <div class="badge-ball"></div>
@@ -220,10 +275,15 @@ tr:hover td{background:rgba(255,255,255,0.03)}
       <div class="stat"><div class="stat-label">Upcoming</div><div class="stat-value" id="summaryUpcomingFixtures">0</div></div>
       <div class="stat"><div class="stat-label">Next Kick-off</div><div class="stat-value" id="summaryNextKickoff">--</div></div>
     </div>
+    <div class="visual-strip">
+      <div class="visual-tile visual-1"><div class="tile-text">Matchday atmosphere with premium visual identity.</div></div>
+      <div class="visual-tile visual-2"><div class="tile-text">Organized squads, smart compliance, total admin control.</div></div>
+      <div class="visual-tile visual-3"><div class="tile-text">Professional workflow from fixture creation to exports.</div></div>
+    </div>
   </section>
 
   <section class="layout">
-    <div class="card">
+    <div class="card reveal">
       <h2>Add Player</h2>
       <div class="stack">
         <div>
@@ -260,7 +320,7 @@ tr:hover td{background:rgba(255,255,255,0.03)}
       </div>
     </div>
 
-    <div class="card" id="fixtureCreatorSection">
+    <div class="card reveal" id="fixtureCreatorSection">
       <h2>Create Fixture</h2>
       <div class="stack">
         <div class="grid-2">
@@ -315,7 +375,7 @@ tr:hover td{background:rgba(255,255,255,0.03)}
       </div>
     </div>
 
-    <div class="card">
+    <div class="card reveal">
       <h2>Export Tools</h2>
       <div class="export-grid">
         <button class="button primary" type="button" id="exportSquadsPdfBtn">Export Squads to PDF</button>
@@ -326,22 +386,22 @@ tr:hover td{background:rgba(255,255,255,0.03)}
       <div class="helper" style="margin-top:12px">PDF exports open a print-ready document. Save as PDF from your browser print dialog.</div>
     </div>
 
-    <div class="card section-full" id="teamsSection">
+    <div class="card section-full reveal" id="teamsSection">
       <h2>Teams and Squads</h2>
       <div id="teams" class="team-grid"></div>
     </div>
 
-    <div class="card section-full">
+    <div class="card section-full reveal">
       <h2>Upcoming Fixtures</h2>
       <div id="upcomingFixtures" class="fixture-list"></div>
     </div>
 
-    <div class="card section-full">
+    <div class="card section-full reveal">
       <h2>Fixtures</h2>
       <div id="fixtures" class="fixture-list"></div>
     </div>
 
-    <div class="card section-full" id="standingsSection">
+    <div class="card section-full reveal" id="standingsSection">
       <h2>Standings</h2>
       <div class="table-wrap">
         <table>
@@ -364,7 +424,7 @@ tr:hover td{background:rgba(255,255,255,0.03)}
       </div>
     </div>
 
-    <div class="card section-full" id="complianceSection">
+    <div class="card section-full reveal" id="complianceSection">
       <h2>Admin Compliance Tracker</h2>
       <div class="stack" style="margin-bottom:14px;">
         <div class="helper">Select multiple players, then apply one or more compliance checks in one action.</div>
@@ -1518,6 +1578,43 @@ function startCountdownRefresh(){
   }, 60000);
 }
 
+function initScrollReveal(){
+  const observer = new IntersectionObserver((entries) => {
+    entries.forEach(entry => {
+      if(entry.isIntersecting) entry.target.classList.add('visible');
+    });
+  }, {threshold:0.12});
+  document.querySelectorAll('.reveal').forEach(el => observer.observe(el));
+}
+
+function initHeroTilt(){
+  const hero = document.getElementById('heroPanel');
+  if(!hero) return;
+  hero.addEventListener('mousemove', (event) => {
+    const rect = hero.getBoundingClientRect();
+    const x = (event.clientX - rect.left) / rect.width - 0.5;
+    const y = (event.clientY - rect.top) / rect.height - 0.5;
+    hero.style.transform = `perspective(1200px) rotateX(${(-y * 3).toFixed(2)}deg) rotateY(${(x * 4).toFixed(2)}deg)`;
+  });
+  hero.addEventListener('mouseleave', () => {
+    hero.style.transform = 'perspective(1200px) rotateX(0deg) rotateY(0deg)';
+  });
+}
+
+function initMagneticButtons(){
+  document.querySelectorAll('.button').forEach(button => {
+    button.addEventListener('mousemove', (event) => {
+      const rect = button.getBoundingClientRect();
+      const x = event.clientX - (rect.left + rect.width / 2);
+      const y = event.clientY - (rect.top + rect.height / 2);
+      button.style.transform = `translate(${x * 0.06}px, ${y * 0.06}px) translateY(-2px)`;
+    });
+    button.addEventListener('mouseleave', () => {
+      button.style.transform = '';
+    });
+  });
+}
+
 function syncFixtureAgeGroups(){
   const home = document.getElementById('homeTeam');
   const away = document.getElementById('awayTeam');
@@ -1580,6 +1677,9 @@ function init(){
   renderComplianceTable();
   bindUi();
   startCountdownRefresh();
+  initScrollReveal();
+  initHeroTilt();
+  initMagneticButtons();
 }
 
 init();
